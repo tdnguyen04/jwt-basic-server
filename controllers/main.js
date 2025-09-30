@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken")
 const CustomAPIError = require("../errors/custom-error")
-const {_findUser} = require('../models/users')
+const {_findUser, _updateUser} = require('../models/users')
 
 const login = async (req, res) => {
   const { email, password } = req.body
@@ -36,8 +36,10 @@ const signup = async (req, res) => {
     throw new CustomAPIError('Please provide email and password to proceed', 400)
   }
   // update data
+  await _updateUser({email, password, firstName, lastName})
 
   // respond to client
+  res.status(200).json({msg: 'successfully signed up'})
 }
 
 const dashboard = async (req, res) => {
