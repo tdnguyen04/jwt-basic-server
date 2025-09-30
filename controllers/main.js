@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken")
 const CustomAPIError = require("../errors/custom-error")
+const {_findUser} = require('../models/users')
 
 const login = async (req, res) => {
   const { email, password } = req.body
@@ -9,7 +10,12 @@ const login = async (req, res) => {
     throw new CustomAPIError('Please provide email and password to proceed', 400)
   }
 
-  // get data
+  // check data
+  if (! await _findUser({email, password})) {
+    console.log(`throw error 401`)
+    throw new CustomAPIError('Unauthorized access', 401)
+  }
+
   const payload = {
     id: new Date().getDate,
     email: email
@@ -39,4 +45,4 @@ const dashboard = async (req, res) => {
   res.send('dashboard')
 }
 
-module.exports = { login, dashboard }
+module.exports = { login, dashboard, signup }
